@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Navigation Menu</title>
+  <title>Dynamic Navigation Menu</title>
   <style>
     /* Reset */
     * {
@@ -13,7 +13,7 @@
     }
 
     body {
-      font-family: 'Times New Roman', 'Times, serif';
+      font-family: 'Arial', sans-serif;
       line-height: 1.6;
     }
 
@@ -46,14 +46,50 @@
       transition: color 0.3s ease;
     }
 
-    .nav-menu a:hover {
+    .nav-menu a:hover,
+    .nav-menu a.active {
       color: #00bcd4;
       text-decoration: underline;
     }
 
-    /* Change Navbar Background on Scroll */
     .navbar.scrolled {
       background-color: #222;
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      display: none;
+      cursor: pointer;
+      color: white;
+      font-size: 24px;
+    }
+
+    .nav-menu-mobile {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .nav-menu-mobile a {
+      margin: 10px 0;
+    }
+
+    @media (max-width: 768px) {
+      .nav-menu {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .nav-menu-mobile {
+        display: flex;
+        background-color: #333;
+        width: 100%;
+      }
     }
 
     /* Content Sections */
@@ -67,44 +103,24 @@
       align-items: center;
       flex-direction: column;
     }
-    .home {
-      padding: 20px;
-      transition: 3s;
-    }
-    #home {
-      background: #FCC737;
-      transition-duration: 3s ;
-    }
 
-    #about {
-      background: #F26B0F;
-      transition-duration: 3s;
-    }
-
-    #services {
-      background: #E73879;
-      transition-duration: 3s;
-    }
-
-    #contact {
-      background: #7E1891;
-      transition-duration: 3s;
-    }
-
-    /* Section Content Styling */
-    .section-content {
-      width: 80%;
-      max-width: 900px;
-      margin-top: 20px;
-      font-size: 18px;
-      line-height: 1.6;
-    }
+    #home { background: #FCC737; }
+    #about { background: #F26B0F; }
+    #services { background: #E73879; }
+    #contact { background: #7E1891; }
   </style>
 </head>
 <body>
 
   <nav class="navbar">
+    <div class="hamburger">☰</div>
     <ul class="nav-menu">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <ul class="nav-menu-mobile">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#services">Services</a></li>
@@ -115,44 +131,57 @@
   <div class="content">
     <section id="home">
       <h1>Welcome to the Home Section</h1>
-      <div class="section-content">
-        <p>This is the home section. Here, you'll find an introduction to the website and an overview of what we offer. We aim to provide the best services for all your needs. Scroll down to explore more!</p>
-      </div>
     </section>
-
     <section id="about">
       <h1>About Us</h1>
-      <div class="section-content">
-        <p>Learn more about our company and the team behind it. We are committed to providing top-notch services and creating meaningful experiences for our customers. Our expertise spans various domains, ensuring we meet your expectations every time.</p>
-      </div>
     </section>
-
     <section id="services">
       <h1>Our Services</h1>
-      <div class="section-content">
-        <p>We offer a wide range of services tailored to meet your specific needs. Whether you’re looking for web development, design solutions, or consultation, we’ve got you covered. Explore our services and see how we can help you achieve your goals.</p>
-      </div>
     </section>
-
     <section id="contact">
       <h1>Contact Us</h1>
-      <div class="section-content">
-        <p>Have any questions or want to get in touch? Reach out to us via the contact form or email. We look forward to hearing from you and working together on exciting projects!</p>
-      </div>
     </section>
   </div>
 
   <script>
-    // Select the navbar
     const navbar = document.querySelector('.navbar');
+    const links = document.querySelectorAll('.nav-menu a, .nav-menu-mobile a');
+    const sections = document.querySelectorAll('section');
+    const hamburger = document.querySelector('.hamburger');
+    const mobileMenu = document.querySelector('.nav-menu-mobile');
 
-    // Add event listener for scroll
+    // Change navbar background on scroll
     window.addEventListener('scroll', () => {
       if (window.scrollY > 50) {
         navbar.classList.add('scrolled');
       } else {
         navbar.classList.remove('scrolled');
       }
+
+      // Highlight active link
+      sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          links.forEach(link => link.classList.remove('active'));
+          const activeLink = document.querySelector(`a[href="#${section.id}"]`);
+          activeLink.classList.add('active');
+        }
+      });
+    });
+
+    // Smooth scrolling
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').slice(1);
+        const targetSection = document.getElementById(targetId);
+        targetSection.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Toggle mobile menu
+    hamburger.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
     });
   </script>
 
